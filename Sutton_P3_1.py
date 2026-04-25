@@ -1,23 +1,41 @@
-""" Sutton P3.1:
-Certain experimental results indicate that the propellant gases of a liquid oxygen and
-gasoline reaction have:
+""" 
+Sutton Problem 3.1 - Thermodynamics of Combustion Gases
 
- - a mean molecular mass of 23.2 kg/kg-mol and 
- - a specific heat ratio of 1.22. 
- 
-Compute the specific heat at constant pressure and at constant volume,
-assuming a perfect gas.
+Purpose:
+Compute specific heats (Cp and Cv) for combustion products using ideal gas relations.
+
+Significance:
+    Specific heats are critical for:
+- Nozzle flow calculations
+- Exhaust velocity predictions
+- Energy balance in propulsion systems
+
+Assumptions:
+- Ideal gas behavior
+- Constant specific heat ratio (k)
 """
 
 ## GIVEN/CONSTANTS
 k = 1.22            # Specific Heat Ratio
 M_w = 23.2          # kg/kg-mol, Molecular Weight: O2 + Gasoline (L)
-R = 8314.3          # J/kg-mol-K, Universal Gas Constant
+R_universal = 8314.3          # J/kg-mol-K, Universal Gas Constant
 
 ## ANALYSIS
-C_p = k*R/((k-1)*M_w)   # Heat Capacity at Constant Pressure, J/kg-K
-C_v = C_p/k             # Heat Capacity at Constant Volume, J/kg-K
+
+# Calculate specific gas constant (R_specific)
+R_specific = R_universal / M_w   # J/kg-K
+
+'''
+From Ideal Gas Relations:
+    Cp - Cv = R_specific
+    k = Cp / Cv
+    Cp = k*R_specific / (k - 1)
+'''
+
+# Calculate Cp and Cv
+Cp = k*R_specific / (k - 1)   # Heat Capacity at Constant Pressure, J/kg-K
+Cv = Cp/k             # Heat Capacity at Constant Volume, J/kg-K
 
 ## OUTPUT
-print(f'C_p = {C_p:.2f} J/kg-K')
-print(f'C_v = {C_v:.2f} J/kg-K')
+print(f'Cp = {Cp:.2f} J/kg-K')
+print(f'Cv = {Cv:.2f} J/kg-K')
