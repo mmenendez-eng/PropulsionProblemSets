@@ -83,6 +83,71 @@ Key results:
 
 ---
 
+### Sutton Problem 3-13 — Thrust Variation with Altitude
+Computes the A-4 rocket thrust at altitude using pressure thrust correction.
+
+Key results:
+- Separates momentum thrust from pressure thrust
+- Calculates atmospheric pressure effect at 25 km
+- Demonstrates why thrust increases as ambient pressure decreases
+
+---
+
+### Sutton Problem 3-15 — Non-Ideal Thrust and Discharge Corrections
+Applies thrust and discharge correction factors to determine actual rocket performance.
+
+Key results:
+- Calculates actual thrust
+- Determines actual exhaust velocity
+- Computes actual specific impulse
+- Finds velocity correction factor
+
+---
+
+### Sutton Problem 3-16 — Ideal Rocket Nozzle Performance
+Analyzes an ideal rocket nozzle using chamber, exit, and gas property conditions.
+
+Key results:
+- Calculates critical pressure ratio
+- Determines throat velocity
+- Computes expansion area ratio
+- Finds theoretical nozzle exit velocity
+
+---
+
+### Sutton Problem 3-17 — Characteristic Velocity and Rocket Performance
+Uses characteristic velocity and thrust coefficient to compute ideal rocket performance.
+
+Key results:
+- Calculates effective exhaust velocity
+- Determines thrust
+- Computes chamber pressure
+- Calculates specific impulse
+
+---
+
+### Sutton Problem 3-19 — Upper Stage Nozzle Performance at Sea Level
+Compares ideal upper-stage nozzle thrust at design altitude and sea-level test conditions.
+
+Key results:
+- Calculates ideal thrust at design ambient pressure
+- Calculates ideal thrust at sea level
+- Quantifies thrust loss from increased back pressure
+- Identifies sea-level overexpansion/back pressure as the likely nonideal behavior source
+
+---
+
+### Sutton Problem 3-21 — Rocket Performance Correction Factors
+Determines correction factors from measured thrust and mass flow data for a non-ideal rocket system.
+
+Key results:
+- Calculates thrust correction factor
+- Determines discharge correction factor
+- Computes thrust coefficient efficiency
+- Calculates actual specific impulse
+
+---
+
 ### Sutton Problem 3-22 — Thrust Coefficient vs Expansion Ratio
 Analyzes thrust coefficient behavior as a function of nozzle expansion ratio for:
 
