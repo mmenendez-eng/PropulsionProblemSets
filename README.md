@@ -61,6 +61,28 @@ Key results:
 
 ---
 
+### Sutton Problem 3-9 — Nozzle Area Change and Performance Impact
+Analyzes how a reduction in nozzle area affects rocket motor performance.
+
+Key results:
+- Evaluates changes in nozzle flow conditions
+- Determines impact on thrust/performance behavior
+- Reinforces the sensitivity of nozzle operation to geometric changes
+- Connects area variation to compressible flow behavior
+
+---
+
+### Sutton Problem 3-12 — Supersonic Nozzle Design at Altitude
+Designs a supersonic rocket nozzle for operation at altitude using specified chamber and ambient conditions.
+
+Key results:
+- Calculates nozzle exit pressure and exit Mach number
+- Determines exit velocity and thrust performance
+- Evaluates nozzle behavior for a specified area ratio
+- Reinforces isentropic nozzle design and altitude operation
+
+---
+
 ### Sutton Problem 3-22 — Thrust Coefficient vs Expansion Ratio
 Analyzes thrust coefficient behavior as a function of nozzle expansion ratio for:
 
@@ -71,3 +93,26 @@ Key results:
 - Identifies optimum expansion ratio
 - Shows pressure thrust sign change at p2 = p3
 - Visualizes momentum vs pressure thrust contributions
+
+---
+
+### Sutton Extra Problem 3A — MA-5A Engine Performance Parameters
+Analyzes propulsion performance data for the MA-5A liquid rocket engine system.
+
+Key results:
+- Calculates propellant mass flow rates
+- Determines nozzle expansion ratios
+- Examines relationships between thrust, specific impulse, and characteristic velocity
+- Highlights dimensional consistency considerations in English Engineering units
+
+---
+
+### Sutton Extra Problem 3B — Rocket Nozzle Design with Correction Factors
+Designs a rocket nozzle using realistic non-ideal correction factors for thrust and exhaust velocity.
+
+Key results:
+- Calculates throat and exit areas
+- Determines nozzle diameters and expansion ratio
+- Computes actual exhaust velocity and specific impulse
+- Compares ideal and non-ideal nozzle performance
+- Reinforces practical nozzle design methodology
