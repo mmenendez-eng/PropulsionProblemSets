@@ -27,6 +27,7 @@ Calculate and plot against pressure the following quantities for
 ## IMPORT
 import numpy as np
 from scipy.optimize import fsolve
+import matplotlib.pyplot as plt
 ## GIVEN/CONSTANTS
 AreaRatio = 2.3 # Ae/At, Nozzle Expansion Ratio
 At = 5          # in^2, Nozzle Throat Area
@@ -105,3 +106,63 @@ for i in range(len(Pc)):
     print(f"{Pc[i]:10.0f} {PressRatio[i]:8.1f} {c[i]:12.0f} {v_exit_opt[i]:14.0f} "
           f"{v_exit_actual[i]:16.0f} {mdot[i]:14.2f} {F_thrust[i]:10.0f} "
           f"{Isp[i]:10.1f} {Pe[i]:10.1f} {T_exit[i]:10.0f}")
+    
+
+plt.figure()
+plt.plot(Pc, PressRatio, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Pressure Ratio, Pc/Pa")
+plt.title("Pressure Ratio vs Chamber Pressure")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, c, marker="o", label="Effective Exhaust Velocity")
+plt.plot(Pc, v_exit_opt, marker="o", label="Ideal Velocity - Optimum")
+plt.plot(Pc, v_exit_actual, marker="o", label="Ideal Velocity - Actual Area Ratio")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Velocity (ft/s)")
+plt.title("Exhaust Velocity vs Chamber Pressure")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, mdot, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Propellant Flow Rate (lbm/s)")
+plt.title("Propellant Flow Rate vs Chamber Pressure")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, F_thrust, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Thrust (lbf)")
+plt.title("Thrust vs Chamber Pressure")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, Isp, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Specific Impulse (s)")
+plt.title("Specific Impulse vs Chamber Pressure")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, Pe, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Exit Pressure, Pe (psia)")
+plt.title("Exit Pressure vs Chamber Pressure")
+plt.grid(True)
+plt.show()
+
+plt.figure()
+plt.plot(Pc, T_exit, marker="o")
+plt.xlabel("Chamber Pressure, Pc (psia)")
+plt.ylabel("Exit Temperature (R)")
+plt.title("Exit Temperature vs Chamber Pressure")
+plt.grid(True)
+plt.show()
