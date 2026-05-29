@@ -1,97 +1,102 @@
-""" Problem 3-9
-For the rocket propulsion unit given in Example 3-2 
-compute the new exhaust velocity
-if the nozzle is cut off, decreasing the exit area by 50%. 
-Estimate the losses in 
-kinetic energy and 
-thrust and 
-express them as a percentage of the original kinetic energy and the
-original thrust.
 """
-## IMPORT
+Sutton Problem 3-9
+
+Compute new exhaust velocity when exit area is reduced by 50% (nozzle cut off).
+Report percent change in thrust and jet kinetic energy relative to the original nozzle.
+
+Assumptions:
+- Isentropic nozzle expansion
+- Original nozzle is "optimally expanded": Pe_old = P_amb
+- Choked throat; cutting Ae changes Ae/At, not At
+"""
+
 import numpy as np
 
+
 ## GIVEN
-P_c = 2.068e6           # Pa
-T_c = 2222              # K
-mdot = 1.0              # kg/s
-k = 1.30
-R = 345.7               # J/kg.K
-g = 9.81                # m/s^2
-P_amb = 101.325e3       # Pascals
-
-## SOLUTION
-
-# Functions
-def v_exit(k,R,T_c,P_c,P_exit):                 # Exhaust Velocity (m/s)
-    v_exit = np.sqrt(2*k/(k-1)*R*T_c*(1-(P_exit/P_c)**((k-1)/k)))
-    return v_exit
-
-def V_exit(k,V_c,P_c,P_y):                      # Exit Specific Volume (m^3/kg)
-    V_exit = V_c*(P_c/P_y)**(1/k)
-    return V_exit
-
-def T_exit(k,T_c,P_c,P_y):
-    T_exit = T_c*(P_y/P_c)**((k-1)/k)           # Exit Temp.    (Kelvin)
-    return T_exit
-
-def A_exit(mdot,V_y,v_y):                       # Exit Area     (m^2)
-    A_exit = mdot*V_y/v_y
-    return A_exit
-
-def M_exit(v_exit,k,R,T_exit):                  # Exit Mach No.
-    M_exit = v_exit/np.sqrt(k*R*T_exit)
-    return M_exit
-
-# Analysis
-# Nozzle Exit Area is 50% of optimal expansion -> expansion ratio is 50% of original
-# P2 =/= P3
-c = v_exit(k,R,T_c,P_c,P_amb)
-Isp = F/(mdot*g)
-PR = P_amb/P_c
-V_c = R*T_c/P_c
-P_y = np.linspace(P_c,P_amb)        
-v_y = v_exit(k,R,T_c,P_c,P_y)
-V_y = V_exit(k,V_c,P_c,P_y)
-T_y = T_exit(k,T_c,P_c,P_y)
-A_y = A_exit(mdot,V_y,v_y)
-A_out = A_y[-1]
-F_old = mdot*c+ (P_amb - P_amb)*A_out
-A_new = A_out/2                             # Area nozzle approx 50%
+P_c = 2.068e6          # Pa, Chamber Pressure
+T_c = 2222.0           # K, Chamber Temperature
+mdot = 1.0            # kg/s, Mass Flow Rate
+k = 1.30              # Specific Heat Ratio
+R = 345.7             # J/(kg*K), Specific Gas Constant
+g = 9.81              # m/s^2
+P_a = 101.325e3      # Pa, Ambient Pressure
 
 
+## FUNCTIONS
+def area_ratio(M):
+    """A/At as a function of Mach number (isentropic)."""
+    term = (2/(k+1)) * (1 + (k-1)/2 * M**2)
+    expo = (k+1) / (2*(k-1))
+    return (1/M) * term**expo
 
-T_t = 2*T_c/(k+1)
-V_t = V_c*((k+1)/2)**(1/(k-1))              # correct
-v_t = np.sqrt(T_t*R*k)
-A_t = mdot*V_t/v_t
-ExpR = A_new/A_t
-print('Expansion Ratio =',ExpR)
-PR_new = 5.5573                             # Per Anderson Appendix 1 Table 1.
-P_exit = P_c/PR_new
+def P_ratio(M):
+    """P/Pc as a function of Mach number (isentropic)."""
+    return (1 + (k-1)/2 * M**2) ** (-k/(k-1))
 
-v_2 = v_exit(k,R,T_c,P_c,P_exit)
-V_2 = V_exit(k,V_c,P_c,P_exit)
-T_2 = T_exit(k,T_c,P_c,P_exit)
-A_2 = A_exit(mdot,V_2,v_2)
+def v_from_Pe(Pe):
+    """Exit velocity from Pc->Pe (isentropic)."""
+    return np.sqrt(2*k/(k-1) * R*T_c * (1 - (Pe/P_c)**((k-1)/k)))
 
-F_new = mdot*v_2 + (P_exit - P_amb)*A_new
-KE_new = 0.5*mdot*(v_2**2)
-KE_old = 0.5*mdot*(c**2)
-print('Exhaust Velocity =',c)
-print('Exhaust Velocity New =', v_2)
-print('Thrust = ',F)
-print('Thrust(new) = ',F_new)
-print('Kinetic Energy Old',KE_old)
-print('Kinetic Energy New',KE_new)
 
-F_change = (F_new-F)/F*100
-KE_change = (KE_new-KE_old)/KE_old*100
+def bisect(f, lo, hi, target, iters=200, tol=1e-10):
+    """Solve f(x)=target on [lo,hi] with bisection (assumes monotonic and bracketed)."""
+    flo = f(lo) - target
+    fhi = f(hi) - target
+    if flo * fhi > 0:
+        raise ValueError("Root not bracketed; adjust lo/hi.")
 
-print('Percent Change in Thrust =',F_change)
-print('Percent Change in Kinetic Energy =',KE_change)
+    for _ in range(iters):
+        mid = 0.5 * (lo + hi)
+        fmid = f(mid) - target
+        if abs(hi - lo) < tol:
+            return mid
+        if flo * fmid <= 0:
+            hi = mid
+            fhi = fmid
+        else:
+            lo = mid
+            flo = fmid
+    return 0.5 * (lo + hi)
 
-## NOTES
-'''
-Values can be more accurate with an analytical method of obtaining the Pressure Ratio (as well as the Expansion Ratio, Nozzle Exit Area)
-'''
+## ANALYIS
+
+# 1) OLD NOZZLE (optimal): Pe_old = Pamb
+# Solve for Me_old from pressure ratio, then get Ae/At_old
+Me_old = bisect(P_ratio, lo=1e-8, hi=50.0, target=P_a/P_c)   # unique solution for pressure ratio
+AeAt_old = area_ratio(Me_old)
+Pe_old = P_a
+ve_old = v_from_Pe(Pe_old)
+
+# Thrust: pressure term is zero by definition of optimal expansion
+F_old = mdot * ve_old
+KE_old = 0.5 * mdot * ve_old**2
+
+# 2) NEW NOZZLE: Ae halved => (Ae/At) halved
+# Solve for Me_new from Ae/At (supersonic branch), then compute Pe_new, ve_new, thrust
+AeAt_new = 0.5 * AeAt_old
+
+# For Ae/At > 1 there are two roots; we want the Supersonic branch => bracket [1, 50]
+Me_new = bisect(area_ratio, lo=1.0 + 1e-8, hi=50.0, target=AeAt_new)
+
+Pe_new = P_c * P_ratio(Me_new)
+ve_new = v_from_Pe(Pe_new)
+
+# Need Ae_new for pressure thrust. We can get At from mdot relation (choked).
+mass_flux = P_c * np.sqrt(k/(R*T_c)) * (2/(k+1)) ** ((k+1)/(2*(k-1)))
+At = mdot / mass_flux
+Ae_new = AeAt_new * At
+
+F_new = mdot * ve_new + (Pe_new - P_a) * Ae_new
+KE_new = 0.5 * mdot * ve_new**2
+
+# Percent Changes
+F_change_pct = (F_new - F_old) / F_old * 100
+KE_change_pct = (KE_new - KE_old) / KE_old * 100
+
+## OUTPUT
+print("\n--- Sutton 3-9 ---")
+print(f"Old: Me={Me_old:.6f}, Ae/At={AeAt_old:.6f}, Pe={Pe_old:.3e} Pa, ve={ve_old:.3f} m/s, F={F_old:.3f} N, KE={KE_old:.3f}")
+print(f"New: Me={Me_new:.6f}, Ae/At={AeAt_new:.6f}, Pe={Pe_new:.3e} Pa, ve={ve_new:.3f} m/s, F={F_new:.3f} N, KE={KE_new:.3f}")
+print(f"\nPercent change in thrust: {F_change_pct:.3f} %")
+print(f"Percent change in kinetic energy: {KE_change_pct:.3f} %")
