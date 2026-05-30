@@ -15,27 +15,27 @@ Assumptions:
 - Constant specific heat ratio (k)
 """
 
-## GIVEN/CONSTANTS
-k = 1.22            # Specific Heat Ratio
-M_w = 23.2          # kg/kg-mol, Molecular Weight: O2 + Gasoline (L)
-R_universal = 8314.3          # J/kg-mol-K, Universal Gas Constant
+## GIVEN / CONSTANTS
+k = 1.22                # Specific Heat Ratio
+M_mol = 23.2            # kg/kg-mol, Molecular Weight: O2 + Gasoline (L)
+R_u = 8314.3            # J/kg-mol-K, Universal Gas Constant
 
 ## ANALYSIS
 
-# Calculate specific gas constant (R_specific)
-R_specific = R_universal / M_w   # J/kg-K
+R = R_u / M_mol         # J/kg-K , Specific Gas Constant
 
 '''
 From Ideal Gas Relations:
-    Cp - Cv = R_specific
+    Cp - Cv = R
     k = Cp / Cv
-    Cp = k*R_specific / (k - 1)
+    Cp = k * R / (k - 1)
 '''
 
-# Calculate Cp and Cv
-Cp = k*R_specific / (k - 1)   # Heat Capacity at Constant Pressure, J/kg-K
-Cv = Cp/k             # Heat Capacity at Constant Volume, J/kg-K
+# Calculate Heat Capacities
+Cp = k * R / (k - 1)   # J/kg-K, Heat Capacity at Constant Pressure
+Cv = Cp / k            # J/kg-K, Heat Capacity at Constant Volume
 
 ## OUTPUT
-print(f'Cp = {Cp:.2f} J/kg-K')
-print(f'Cv = {Cv:.2f} J/kg-K')
+print('RESULTS')
+print(f'Heat Capacity at Constant Pressure = {Cp:.2f} J/kg-K')
+print(f'Heat Capacity at Constant Volume   = {Cv:.2f} J/kg-K')

@@ -29,19 +29,19 @@ import numpy as np
 from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
 ## GIVEN/CONSTANTS
-AreaRatio = 2.3 # Ae/At, Nozzle Expansion Ratio
-At = 5          # in^2, Nozzle Throat Area
+eps = 2.3       # Ae/At, Nozzle Expansion Ratio
+A_t = 5         # in^2, Nozzle Throat Area
 k = 1.30        # Specific Heat Ratio
-R_specific = 66 # ft-lbf/lbm*R, Specific Gas Constant
-Pc = np.asarray([300,200,100])        # psia, Chamber Pressure
-Tc = 5300       # deg. R, Chamber Temperature
-Pa = 10        # psia, Atmospheric Temperature
-g0 = 32.2
+R = 66          # ft-lbf/lbm*R, Specific Gas Constant
+P_c = np.asarray([300,200,100])        # psia, Chamber Pressure
+T_c = 5300       # deg. R, Chamber Temperature
+P_a = 10        # psia, Atmospheric Temperature
+g = 32.2
 
-## FUNCTIONS
-def exhaust_velocity(k,Tc,R,P1,P2,g):
-    """Calculates exhaust velocity based on pressure ratio and chamber conditions"""
-    return np.sqrt(2*k/(k-1)*R*Tc*g*(1-(P2/P1)**((k-1)/k)))
+## FUNCTIONS, NOTE: need to adjust function to accomodate SI and EE units
+def exhaust_velocity(k: float, R: float, T_c: float, pe_pc: float) -> float:
+    """Return ideal isentropic exhaust velocity, Eq. 3-16 style."""
+    return np.sqrt((2.0 * k / (k - 1.0)) * R * T_c * (1.0 - pe_pc ** ((k - 1.0) / k)))
 
 def calculate_exit_mach_number(area_ratio, k):
     """Calculate the exit Mach number using the area-Mach relation."""
@@ -55,31 +55,31 @@ def calculate_exit_mach_number(area_ratio, k):
 
 ## ANALYSIS
 # Pressure Ratio between Chamber and Atmosphere
-PressRatio = Pc/Pa
+PressRatio = P_c/P_a
 
 # Exit Conditions
-Me = calculate_exit_mach_number(AreaRatio, k) # Exit Mach No.
-Pe = Pc/((1+0.5*(k-1)*Me**2)**(k/(k-1)))      # Exit Pressure, Pa
-T_exit = Tc*(Pe/Pc)**((k-1)/k)                # Exit Temperature, deg R
+M_e = calculate_exit_mach_number(eps, k) # Exit Mach No.
+P_e = P_c/((1+0.5*(k-1)*M_e**2)**(k/(k-1)))      # Exit Pressure, Pa
+T_e = T_c*(P_e/P_c)**((k-1)/k)                # Exit Temperature, deg R
 
 # Ideal Exhaust Velocity for:
 # - Optimum Area Ratio
-v_exit_opt = exhaust_velocity(k,Tc,R_specific,Pc,Pa,g0) # ft/s
+v_e_opt = exhaust_velocity(k,T_c,R,P_c,P_a,g) # ft/s
 
 # - Actual Area Ratio
-v_exit_actual = exhaust_velocity(k,Tc,R_specific,Pc,Pe,g0) # ft/s
+v_e_actual = exhaust_velocity(k,T_c,R,P_c,P_e,g) # ft/s
 
 # Propellant Flow
-mdot = At*Pc*k*g0/np.sqrt(k*R_specific*Tc*g0)*np.sqrt((2/(k+1))**((k+1)/(k-1))) # kg/s
+mdot = A_t*P_c*k*g/np.sqrt(k*R*T_c*g)*np.sqrt((2/(k+1))**((k+1)/(k-1))) # kg/s
 
 # Effective Exhaust Velocity
-Ae = AreaRatio*At                       # in^2, Nozzle Exit Area
-c = v_exit_actual + g0*(Pe-Pa)*Ae/mdot  # ft/s
+A_e = eps*A_t                       # in^2, Nozzle Exit Area
+c = v_e_actual + g*(P_e-P_a)*A_e/mdot  # ft/s
 
 # Thrust
-F_thrust = mdot*c/g0    # N
+F = mdot * c / g    # N
 # Specific Impulse
-Isp = c/g0              # s
+Isp = c / g              # s
 
 ## OUTPUT
 headers = (
@@ -102,14 +102,14 @@ print(f"{headers[0]:>10} {headers[1]:>8} {headers[2]:>12} {headers[3]:>14} "
       f"{headers[7]:>10} {headers[8]:>10} {headers[9]:>10}")
 print("-" * 118)
 
-for i in range(len(Pc)):
-    print(f"{Pc[i]:10.0f} {PressRatio[i]:8.1f} {c[i]:12.0f} {v_exit_opt[i]:14.0f} "
-          f"{v_exit_actual[i]:16.0f} {mdot[i]:14.2f} {F_thrust[i]:10.0f} "
-          f"{Isp[i]:10.1f} {Pe[i]:10.1f} {T_exit[i]:10.0f}")
+for i in range(len(P_c)):
+    print(f"{P_c[i]:10.0f} {PressRatio[i]:8.1f} {c[i]:12.0f} {v_e_opt[i]:14.0f} "
+          f"{v_e_actual[i]:16.0f} {mdot[i]:14.2f} {F[i]:10.0f} "
+          f"{Isp[i]:10.1f} {P_e[i]:10.1f} {T_e[i]:10.0f}")
     
 
 plt.figure()
-plt.plot(Pc, PressRatio, marker="o")
+plt.plot(P_c, PressRatio, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Pressure Ratio, Pc/Pa")
 plt.title("Pressure Ratio vs Chamber Pressure")
@@ -117,9 +117,9 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, c, marker="o", label="Effective Exhaust Velocity")
-plt.plot(Pc, v_exit_opt, marker="o", label="Ideal Velocity - Optimum")
-plt.plot(Pc, v_exit_actual, marker="o", label="Ideal Velocity - Actual Area Ratio")
+plt.plot(P_c, c, marker="o", label="Effective Exhaust Velocity")
+plt.plot(P_c, v_e_opt, marker="o", label="Ideal Velocity - Optimum")
+plt.plot(P_c, v_e_actual, marker="o", label="Ideal Velocity - Actual Area Ratio")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Velocity (ft/s)")
 plt.title("Exhaust Velocity vs Chamber Pressure")
@@ -128,7 +128,7 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, mdot, marker="o")
+plt.plot(P_c, mdot, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Propellant Flow Rate (lbm/s)")
 plt.title("Propellant Flow Rate vs Chamber Pressure")
@@ -136,7 +136,7 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, F_thrust, marker="o")
+plt.plot(P_c, F, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Thrust (lbf)")
 plt.title("Thrust vs Chamber Pressure")
@@ -144,7 +144,7 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, Isp, marker="o")
+plt.plot(P_c, Isp, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Specific Impulse (s)")
 plt.title("Specific Impulse vs Chamber Pressure")
@@ -152,7 +152,7 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, Pe, marker="o")
+plt.plot(P_c, P_e, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Exit Pressure, Pe (psia)")
 plt.title("Exit Pressure vs Chamber Pressure")
@@ -160,7 +160,7 @@ plt.grid(True)
 plt.show()
 
 plt.figure()
-plt.plot(Pc, T_exit, marker="o")
+plt.plot(P_c, T_e, marker="o")
 plt.xlabel("Chamber Pressure, Pc (psia)")
 plt.ylabel("Exit Temperature (R)")
 plt.title("Exit Temperature vs Chamber Pressure")
