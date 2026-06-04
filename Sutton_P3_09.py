@@ -14,13 +14,13 @@ import numpy as np
 
 
 ## GIVEN
-P_c = 2.068e6          # Pa, Chamber Pressure
-T_c = 2222.0           # K, Chamber Temperature
-mdot = 1.0            # kg/s, Mass Flow Rate
-k = 1.30              # Specific Heat Ratio
-R = 345.7             # J/(kg*K), Specific Gas Constant
-g = 9.81              # m/s^2
-P_a = 101.325e3      # Pa, Ambient Pressure
+P_c = 2.068e6       # Pa, Chamber Pressure
+T_c = 2222.0        # K, Chamber Temperature
+mdot = 1.0          # kg/s, Mass Flow Rate
+k = 1.30            # Specific Heat Ratio
+R = 345.7           # J/(kg*K), Specific Gas Constant
+g = 9.81            # m/s^2
+P_a = 101.325e3     # Pa, Ambient Pressure
 
 
 ## FUNCTIONS
@@ -95,7 +95,7 @@ F_change_pct = (F_new - F_old) / F_old * 100
 KE_change_pct = (KE_new - KE_old) / KE_old * 100
 
 ## OUTPUT
-print("\n--- Sutton 3-9 ---")
+print('SUTTON PROBLEM 3.9 RESULTS')
 print(f"Old: Me={Me_old:.6f}, Ae/At={AeAt_old:.6f}, Pe={Pe_old:.3e} Pa, ve={ve_old:.3f} m/s, F={F_old:.3f} N, KE={KE_old:.3f}")
 print(f"New: Me={Me_new:.6f}, Ae/At={AeAt_new:.6f}, Pe={Pe_new:.3e} Pa, ve={ve_new:.3f} m/s, F={F_new:.3f} N, KE={KE_new:.3f}")
 print(f"\nPercent change in thrust: {F_change_pct:.3f} %")

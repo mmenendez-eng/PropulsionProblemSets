@@ -17,8 +17,9 @@ from scipy.optimize import brentq
 P_c = 20            # atm, Chamber Pressure
 k = 1.20            # Specific Heat Ratio
 P_sl = 101325       # Pa, Sea Level Pressure
+
 # Taken from Appendix 2 Table 1, Sutton
-P_amb_ratio = np.asarray([1, .887, .66919, .53313, .26151, 2.5158e-2, 7.8735e-4])
+P_a_ratio = np.asarray([1, .887, .66919, .53313, .26151, 2.5158e-2, 7.8735e-4])
 alt = np.asarray([0, 1e3, 3e3, 5e3, 10e3, 25e3, 50e3])              # m, Altitude
 
 ## FUNCTIONS
@@ -34,16 +35,16 @@ def area_mach(M, k):
     return (1.0 / M) * ((2.0 / (k + 1.0)) * (1.0 + (k - 1.0) / 2.0 * M**2))**((k + 1.0) / (2.0 * (k - 1.0)))
 
 ## ANALYSIS
-P_c = 20 * P_sl               # Converts from atm to Pa
-P_amb = P_sl * P_amb_ratio    # Pa, Ambient Pressure Array
-PressRatio = P_c / P_amb      # Controlling Pressure Ratio Array
+P_c = 20 * P_sl               # Converts from atm to Pa, Chamber Pressure
+P_a = P_sl * P_a_ratio      # Pa, Ambient Pressure Array
+PressRatio = P_c / P_a     # Controlling Pressure Ratio Array
 
-Me = np.asarray([mach_from_pressure_ratio(pr,k) for pr in 1 / PressRatio])
-AreaRatio = area_mach(Me, k)
+M_e = np.asarray([mach_from_pressure_ratio(pr,k) for pr in 1 / PressRatio])
+eps = area_mach(M_e, k)
 
-
+## OUTPUT
 plt.figure()
-plt.semilogx(AreaRatio, alt / 1000, marker="o")
+plt.semilogx(eps, alt / 1000, marker="o")
 plt.title('Optimum Nozzle Area Ratio vs Altitude')
 plt.ylabel('Altitude, km')
 plt.xlabel('Area Ratio, Ae/At')
